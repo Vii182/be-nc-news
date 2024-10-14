@@ -3,7 +3,8 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
-const endpoints = require("../endpoints.json")
+const endpoints = require("../endpoints.json");
+const toBeSortedBy = require("jest-sorted");
 
 
 
@@ -40,6 +41,37 @@ describe("/api/topics", () => {
                 expect(typeof topic.slug).toBe('string');
                 expect(typeof topic.description).toBe('string');
               });
+        })
+    })
+})
+
+describe("/api/articles", () => {
+    test("GET: 200 responds with an array of all articles with correct properties, including 'comment_count'", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+            expect(Array.isArray(response.body.articles)).toBe(true);
+            expect(response.body.articles).toHaveLength(13);
+            response.body.articles.forEach((article) => {
+                expect(article).toHaveProperty('author');
+                expect(article).toHaveProperty('title');
+                expect(article).toHaveProperty('article_id');
+                expect(article).toHaveProperty('topic');
+                expect(article).toHaveProperty('created_at');
+                expect(article).toHaveProperty('votes');
+                expect(article).toHaveProperty('article_img_url');
+                expect(article).toHaveProperty('comment_count');
+                expect(article).not.toHaveProperty('body');
+            })
+        })
+    })
+    test("GET: 200 responds with articles sorted by date in descending order", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true })
         })
     })
 })
