@@ -22,6 +22,7 @@ describe("/api/topics", () => {
         .expect(200)
         .then((response) => {
             expect(Array.isArray(response.body.topics)).toBe(true);
+            expect(response.body.topics).toHaveLength(3);
             response.body.topics.forEach((topic) => {
                 expect(topic).toHaveProperty('slug');
                 expect(topic).toHaveProperty('description');
