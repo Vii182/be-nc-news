@@ -4,7 +4,6 @@ const getArticles = (req, res, next) => {
     fetchArticles().then((articles) => {
         res.status(200).send({ articles });
     }).catch((err) => {
-        console.log(err)
         next(err);
     })
 }
@@ -14,7 +13,6 @@ const getArticleById = (req, res, next) => {
     fetchArticleById(article_id).then((article) => {
         res.status(200).send({ article });
     }).catch((err) => {
-        console.log(err)
         next(err);
     });
 };
@@ -27,7 +25,6 @@ const getCommentsByArticleId = (req, res, next) => {
     .then((comments) => {
         res.status(200).send({ comments });
     }).catch((err) => {
-        console.log(err)
         next(err);
     })
 }
