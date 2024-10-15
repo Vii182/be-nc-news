@@ -16,6 +16,8 @@ afterAll(() => {
     return db.end()
 });
 
+
+
 describe("/api", () => {
     test("GET: 200 responds with an object detailing all available endpoints", () => {
         return request(app)
@@ -133,6 +135,14 @@ describe("/api/articles/:article_id/comments", () => {
             })
         })
     })
+    test("GET: 200 responds with an empty array when no comments are present for an article", () => {
+        return request(app)
+            .get("/api/articles/13/comments")
+            .expect(200)
+            .then((response) => {
+                expect(response.body.comments).toEqual([]);
+            });
+    });
     test("GET: 400 responds with an error when the passed article_id is not a number", () => {
         return request(app)
         .get("/api/articles/not-a-number/comments")
@@ -149,4 +159,21 @@ describe("/api/articles/:article_id/comments", () => {
             expect(body.msg).toBe("Article not found");
         });
     })
+    test("POST: 201 responds with the posted comment with all neccessary properties", () => {
+        const testComment = { username: "butter_bridge", body: "the war is finally over" };
+        return request(app)
+        .post("/api/articles/12/comments")
+        .send(testComment)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.comment).toMatchObject({
+                comment_id: expect.any(Number),
+                article_id: 12,
+                author: 'butter_bridge',
+                body: 'the war is finally over',
+                votes: 0,
+                created_at: expect.any(String),
+            });
+        });
+    });
 })
