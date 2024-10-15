@@ -1,10 +1,10 @@
 
-const handleCustomErrors = ((err, req, res, next) => {
+const handleCustomErrors = (err, req, res, next) => {
     if (err.status){
       return res.status(err.status).send({ msg: err.msg });
     }
     next(err)
-  });
+  };
 
 const handle400Errors = (err, req, res, next) => {
     if (err.code === '22P02'){
@@ -13,7 +13,7 @@ const handle400Errors = (err, req, res, next) => {
     next(err)
 }
 
-const handle404Errors = (req, res) => {
+const handle404Errors = (req, res, next) => {
     res.status(404).send({ msg: 'Route not found' });
 };
 
