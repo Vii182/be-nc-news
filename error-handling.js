@@ -13,7 +13,7 @@ const handle400Errors = (err, req, res, next) => {
     next(err)
 }
 
-const handle404Errors = (err, req, res, next) => {
+const handle404Errors = (req, res) => {
     res.status(404).send({ msg: 'Route not found' });
 };
 
