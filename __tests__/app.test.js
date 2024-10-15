@@ -176,4 +176,24 @@ describe("/api/articles/:article_id/comments", () => {
             });
         });
     });
+    test("POST: 400 responds with an error when the request body is missing a username or body field", () => {
+        const testComment = { body: "the war is finally over" };
+        return request(app)
+            .post("/api/articles/12/comments")
+            .send(testComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request");
+            });
+    });
+    test("POST: 404 responds with an error when the article_id does not exist", () => {
+        const testComment = { username: "masterChief", body: "the war is finally over" };
+        return request(app)
+        .post("/api/articles/999/comments")
+        .send(testComment)
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("Article not found");
+        });
+    });
 })
