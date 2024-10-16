@@ -152,16 +152,26 @@ describe("/api/articles/:article_id", () => {
                 });
             });
     });
-    test("PATCH: 400 responds with an error when passed an invalid or missing update variable", () => {
+    test("PATCH: 400 responds with an error when the update variable is empty", () => {
         const voteUpdateTest = {};
         return request(app)
-        .patch("/api/articles/1")
-        .send(voteUpdateTest)
-        .expect(400)
-        .then((response) => {
+            .patch("/api/articles/1")
+            .send(voteUpdateTest)
+            .expect(400)
+            .then((response) => {
             expect(response.body.msg).toBe('Bad Request: inc_votes must be a number')
-        })
-    })
+            });
+    });
+    test("PATCH: 400 responds with an error when inc_votes is not a number", () => {
+        const voteUpdateTest = { inc_votes: 'not-a-number' };
+        return request(app)
+            .patch("/api/articles/1")
+            .send(voteUpdateTest)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad Request: inc_votes must be a number');
+            });
+    });
     test("PATCH: 400 responds with an error when the passed article_id is not a number", () => {
         const voteUpdateTest = { inc_votes: 10 };
         return request(app)
@@ -264,4 +274,31 @@ describe("/api/articles/:article_id/comments", () => {
             expect(response.body.msg).toBe("Article not found");
         });
     });
+})
+
+describe("/api/comments/:comment_id", () => {
+    test("DELETE: 204 responds with no content when the comment has been successfully deleted", () => {
+        return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then((response) => {
+            expect(response.body).toEqual({});
+        })
+    })
+    test("DELETE: 400 responds with an error when the passed comment_id is not a number", () => {
+        return request(app)
+            .delete("/api/comments/not-a-number")
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request");
+            });
+    });
+    test("DELETE: 404 responds with an error when the passed comment_id does not exist", () => {
+        return request(app)
+        .delete("/api/comments/999")
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("Comment not found");
+        })
+    })
 })
