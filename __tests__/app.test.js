@@ -73,8 +73,32 @@ describe("/api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then((response) => {
-            expect(response.body.articles).toBeSortedBy('created_at', { descending: true })
-        })
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true });
+        });
+    })
+    test("GET: 200 responds with articles when passed valid column and order queries in correct form", () => {
+        return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('title', { ascending: true });
+        });
+    })
+    test("GET: 400 responds with an error when passed an invalid sort_by query", () => {
+        return request(app)
+        .get("/api/articles?sort_by=cheese")
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Invalid sort_by query');
+        });
+    })
+    test("GET: 400 responds with an error when passed an invalid order query", () => {
+        return request(app)
+        .get("/api/articles?sort_by=title&order=sideways")
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Invalid order query');
+        });
     })
 })
 
