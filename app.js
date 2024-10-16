@@ -5,12 +5,14 @@ const { getArticleById, getArticles, getCommentsByArticleId, patchArticleVotes }
 const { getApiEndpoints } = require("./controllers/api.controller");
 const { handleCustomErrors, handle400Errors, handle404Errors, handle500Errors } = require("./error-handling");
 const { postCommentByArticleId, deleteComment } = require("./controllers/comments.controller");
+const { getUsers } = require("./controllers/users.controller");
 
 app.use(express.json());
 
 //ROUTES
 app.get("/api", getApiEndpoints);
 app.get("/api/topics", getTopics);
+app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
