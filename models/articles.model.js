@@ -31,4 +31,13 @@ const fetchCommentsByArticleId = (article_id) => {
     })
 }
 
-module.exports = { fetchArticles, fetchArticleById, fetchCommentsByArticleId }
+const updateArticleVoteCount = (article_id, inc_votes) => {
+    if (typeof inc_votes === 'number'){
+        return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, article_id])
+        .then((result) => {
+            return result.rows[0];
+        })
+    }else return Promise.reject({ status: 400, msg: 'Bad Request: inc_votes must be a number' });
+}
+
+module.exports = { fetchArticles, fetchArticleById, fetchCommentsByArticleId, updateArticleVoteCount }
