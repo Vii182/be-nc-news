@@ -114,6 +114,74 @@ describe("/api/articles/:article_id", () => {
             expect(body.msg).toBe("Article not found")
         });
     })
+    test("PATCH: 200 responds with an updated vote count on the article when votes are incremented", () => {
+        const voteUpdateTest = { inc_votes: 10 };
+        return request(app)
+            .patch("/api/articles/1")
+            .send(voteUpdateTest)
+            .expect(200)
+            .then((response) => {
+                expect(response.body.updatedVotes).toMatchObject({
+                    article_id: 1,
+                    title: "Living in the shadow of a great man",
+                    votes: 110,
+                    author: "butter_bridge",
+                    body: "I find this existence challenging",
+                    topic: "mitch",
+                    article_img_url: expect.any(String),
+                    created_at: expect.any(String)
+                });
+            });
+    });
+    test("PATCH: 200 responds with an updated vote count on the article when votes are decremented", () => {
+        const voteUpdateTest = { inc_votes: -5 };
+        return request(app)
+            .patch("/api/articles/1")
+            .send(voteUpdateTest)
+            .expect(200)
+            .then((response) => {
+                expect(response.body.updatedVotes).toMatchObject({
+                    article_id: 1,
+                    title: "Living in the shadow of a great man",
+                    votes: 95,
+                    author: "butter_bridge",
+                    body: "I find this existence challenging",
+                    topic: "mitch",
+                    article_img_url: expect.any(String),
+                    created_at: expect.any(String)
+                });
+            });
+    });
+    test("PATCH: 400 responds with an error when passed an invalid or missing update variable", () => {
+        const voteUpdateTest = {};
+        return request(app)
+        .patch("/api/articles/1")
+        .send(voteUpdateTest)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad Request: inc_votes must be a number')
+        })
+    })
+    test("PATCH: 400 responds with an error when the passed article_id is not a number", () => {
+        const voteUpdateTest = { inc_votes: 10 };
+        return request(app)
+        .patch("/api/articles/not-a-number")
+        .send(voteUpdateTest)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad Request')
+        })
+    })
+    test("PATCH: 404 responds with an error when the passed article_id does not exist", () => {
+        const voteUpdateTest = { inc_votes: 10 };
+        return request(app)
+        .patch("/api/articles/999")
+        .send(voteUpdateTest)
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('Article not found')
+        })
+    })
 })
 
 describe("/api/articles/:article_id/comments", () => {
