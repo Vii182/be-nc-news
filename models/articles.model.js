@@ -1,7 +1,7 @@
 const fs = require("fs/promises");
 const db = require("../db/connection");
 
-const fetchArticles = (sort_by = 'created_at', order = 'desc') => {
+const fetchArticles = (sort_by = 'created_at', order = 'desc', topic) => {
     const validSortBy = ['title', 'topic', 'author', 'created_at', 'votes', 'comment_count'];
     const validOrder = ['asc', 'desc'];
 
@@ -12,14 +12,26 @@ const fetchArticles = (sort_by = 'created_at', order = 'desc') => {
         return Promise.reject({ status: 400, msg: 'Invalid order query'})
     }
 
-    return db.query(`
+    const topicFilter = [];
+
+    let queryString = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, articles.created_at, 
         articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY ${sort_by} ${order};
-        `)
+        `;
+
+    if(topic){
+        queryString += ` WHERE articles.topic = $1`;
+        topicFilter.push(topic);
+    }
+
+    queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+
+    return db.query(queryString, topicFilter)
         .then((result) => {
+            if (result.rows.length === 0){
+                return Promise.reject({ status: 404, msg: "No articles found for topic type"});
+            }
         return result.rows;
     });
 }

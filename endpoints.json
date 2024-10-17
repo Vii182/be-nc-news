@@ -22,7 +22,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of all articles, can be sorted by ('title', 'topic', 'author', 'created_at', 'votes', 'comment_count'), filtered by topic, and ordered by asc/desc",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
