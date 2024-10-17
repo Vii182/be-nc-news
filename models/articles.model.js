@@ -16,7 +16,7 @@ const fetchArticles = (sort_by = 'created_at', order = 'desc', topic) => {
 
     let queryString = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, articles.created_at, 
-        articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles
+        articles.votes, articles.article_img_url, CAST(COUNT(comments.comment_id) AS INT) AS comment_count FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
         `;
 
@@ -38,7 +38,7 @@ const fetchArticles = (sort_by = 'created_at', order = 'desc', topic) => {
 
 const fetchArticleById = (article_id) => {
     return db.query(`
-        SELECT articles.*, COUNT(comments.comment_id) AS comment_count FROM articles 
+        SELECT articles.*, CAST(COUNT(comments.comment_id) AS INT) AS comment_count FROM articles 
         LEFT JOIN comments ON comments.article_id = articles.article_id 
         WHERE articles.article_id = $1
         GROUP BY articles.article_id;
