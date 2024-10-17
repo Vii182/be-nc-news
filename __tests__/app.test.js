@@ -94,7 +94,15 @@ describe("/api/articles", () => {
             expect(response.body.articles).toHaveLength(1);
         })
     })
-    test("GET: 404 responds with an error when no topics are found for the given query", () => {
+    test("GET: 404 responds with an error when no articles are found for the given topic query", () => {
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("No articles found for topic type")
+        })
+    })
+    test("GET: 404 responds with an error when topic is not present", () => {
         return request(app)
         .get("/api/articles?topic=farming")
         .expect(404)
@@ -135,7 +143,7 @@ describe("/api/articles/:article_id", () => {
                 expect(body.article).toHaveProperty('article_id', expect.any(Number));
                 expect(body.article).toHaveProperty('votes', expect.any(Number));
                 expect(body.article).toHaveProperty('article_img_url', expect.any(String));
-                expect(body.article).toHaveProperty('comment_count', expect.any(String));
+                expect(body.article).toHaveProperty('comment_count', expect.any(Number));
                 expect(body.article).toHaveProperty('created_at');
             });
         })
