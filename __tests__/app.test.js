@@ -123,23 +123,20 @@ describe("/api/articles", () => {
 //--/API/ARTICLES/:ARTICLE_ID
 describe("/api/articles/:article_id", () => {
     describe("GET REQUESTS", () => {
-        test("GET: 200 responds with the article object for a valid article_id", () => {
+        test("GET: 200 responds with the article object for a valid article_id, including comment_count property", () => {
             return request(app)
             .get("/api/articles/1")
             .expect(200)
             .then(({ body }) => {
-                expect(body.article).toHaveProperty('title');
-                expect(body.article).toHaveProperty('body');
-                expect(body.article).toHaveProperty('topic');
-                expect(body.article).toHaveProperty('author');
-                expect(body.article).toHaveProperty('article_id');
+                expect(body.article).toHaveProperty('title', expect.any(String));
+                expect(body.article).toHaveProperty('body', expect.any(String));
+                expect(body.article).toHaveProperty('topic', expect.any(String));
+                expect(body.article).toHaveProperty('author', expect.any(String));
+                expect(body.article).toHaveProperty('article_id', expect.any(Number));
+                expect(body.article).toHaveProperty('votes', expect.any(Number));
+                expect(body.article).toHaveProperty('article_img_url', expect.any(String));
+                expect(body.article).toHaveProperty('comment_count', expect.any(String));
                 expect(body.article).toHaveProperty('created_at');
-                expect(body.article).toHaveProperty('votes');
-                expect(body.article).toHaveProperty('article_img_url');
-                expect(typeof body.article.title).toBe('string');
-                expect(typeof body.article.body).toBe('string');
-                expect(typeof body.article.topic).toBe('string');
-                expect(typeof body.article.author).toBe('string');
             });
         })
         test("GET: 400 responds with an error when the passed article_id is not a number", () => {
