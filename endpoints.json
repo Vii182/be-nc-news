@@ -21,6 +21,15 @@
       ]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves an object containing all the data of the chosen user",
+    "queries": [],
+    "exampleResponse": { 
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg" 
+        }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles, can be sorted by ('title', 'topic', 'author', 'created_at', 'votes', 'comment_count'), filtered by topic, and ordered by asc/desc",
     "queries": ["author", "topic", "sort_by", "order"],
