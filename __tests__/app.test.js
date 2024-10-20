@@ -378,3 +378,30 @@ describe("/api/users", () => {
             })
     })
 })
+
+//--/API/USERS/:USERNAME
+describe("/api/users/:username", () => {
+    test("GET: 200 responds with the username object of a given username", () => {
+        return request(app)
+            .get("/api/users/butter_bridge")
+            .expect(200)
+            .then((response) => {
+                expect(response.body.user).toHaveProperty('username', expect.any(String));
+                expect(response.body.user).toHaveProperty('name', expect.any(String));
+                expect(response.body.user).toHaveProperty('avatar_url', expect.any(String));
+                expect(response.body.user).toMatchObject({
+                    username: 'butter_bridge',
+                    name: 'jonny',
+                    avatar_url: 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
+                });
+            });
+    });
+    test("GET: 404 responds with an error when the passed article_id does not exist", () => {
+        return request(app)
+        .get("/api/users/masterChief")
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("No user found")
+        });
+    })
+});
